@@ -7,6 +7,7 @@ import IngredientsPanel from "@/components/IngredientsPanel"
 import SavedRecipes from "@/components/SavedRecipes"
 import { fetchRecipe } from "@/services/recipeService"
 import type { Recipe } from "@/services/recipeService"
+import { Send } from 'lucide-react';
 
 const STORAGE_KEY = "saved_recipes"
 
@@ -224,6 +225,12 @@ const Index = () => {
                       <Save className="h-4 w-4 mr-2" />
                       <span className="text-sm">Save</span>
                     </button>
+
+                    <button className="flex items-center btn-primary">
+                      <Send className="h-4 w-4 mr-2" />
+                      <span className="text-sm">Post</span>
+                    </button>
+
                   </div>
                 </div>
               </div>
