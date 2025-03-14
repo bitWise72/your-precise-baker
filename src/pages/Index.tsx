@@ -279,6 +279,7 @@ const Index = () => {
           recipe={recipe}
           onClose={() => setShowIngredients(false)}
           onUpdateIngredient={handleUpdateIngredient}
+          darkMode={darkMode}
         />
       )}
     </div>
