@@ -8,7 +8,7 @@ interface IngredientsPanelProps {
   onUpdateIngredient: (ingredient: string, newQuantity: string) => void
   darkMode: boolean
 }
-
+//dark mode is working
 const IngredientsPanel: React.FC<IngredientsPanelProps> = ({
   recipe,
   onClose,
