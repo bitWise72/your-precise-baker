@@ -49,7 +49,14 @@ const Index = () => {
     setRecipeName(query);
     try {
       const data = await fetchRecipe(query);
-      setRecipe(data);
+      const dataArray = Object.values(data); // Convert object to array
+      const sortedData = dataArray.sort((a, b) => Number(a.time) - Number(b.time)); // Sort by time
+      const newData: Recipe = sortedData.reduce((acc, step, index) => {
+        acc[`step${index + 1}`] = step;
+        return acc;
+      }, {} as Recipe);
+
+      setRecipe(newData);
       
       if (Object.keys(data).length > 0) {
         const firstStep = data[Object.keys(data)[0]];
@@ -135,7 +142,10 @@ const Index = () => {
               </div>
             </div>
             
-            <div className="flex items-center space-x-3">
+            <div className="flex items-center space-x-4">
+              <div className="text-center p-2.5 cursor-pointer lg:font-semibold rounded-lg text-white bg-primary hover:bg-primary-hover transition-colors font-normal">
+                Community
+              </div>
               <button
                 onClick={() => setDarkMode(!darkMode)}
                 className={`p-2 rounded-lg ${
