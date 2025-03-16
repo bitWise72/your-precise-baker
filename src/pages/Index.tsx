@@ -7,18 +7,22 @@ import IngredientsPanel from "@/components/IngredientsPanel"
 import SavedRecipes from "@/components/SavedRecipes"
 import { fetchRecipe } from "@/services/recipeService"
 import type { Recipe } from "@/services/recipeService"
-import { Send } from 'lucide-react';
+import { Send } from "lucide-react"
+import { useNavigate } from "react-router-dom"
+import Navbar from "@/components/Navbar"
+import { useDarkMode } from "@/contexts/DarkModeContext"
 
 const STORAGE_KEY = "saved_recipes"
 
 const Index = () => {
+  const { darkMode, setDarkMode } = useDarkMode()
   const [recipe, setRecipe] = useState<Recipe | null>(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [currentStep, setCurrentStep] = useState(0)
   const [showIngredients, setShowIngredients] = useState(false)
-  const [darkMode, setDarkMode] = useState(false)
   const [recipeName, setRecipeName] = useState("")
+  const navigate = useNavigate()
 
   useEffect(() => {
     if (darkMode) {
@@ -130,53 +134,20 @@ const Index = () => {
     toast.success(`Updated ${ingredient} to ${newQuantity}`)
   }
 
+  const handlePost = () => {
+    if (!recipe) return
+
+    navigate("/review-post", {
+      state: {
+        recipe,
+        recipeName,
+      },
+    })
+  }
+
   return (
-    <div className="min-h-screen transition-colors duration-300">
-      <header className={`${darkMode ? "bg-gray-800" : "bg-white"} shadow-sm`}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3">
-              <div className="rounded-full bg-primary w-10 h-10 flex items-center justify-center text-white font-bold text-lg">
-                B
-              </div>
-              <div>
-                <h1 className="text-2xl font-bold">Bawarchi.AI</h1>
-                <p
-                  className={`text-sm ${
-                    darkMode ? "text-gray-300" : "text-gray-600"
-                  }`}
-                >
-                  Your Personal Kitchen Assistant
-                </p>
-              </div>
-            </div>
-
-            <div className="flex items-center space-x-4">
-              <div className="text-center p-2.5 cursor-pointer lg:font-semibold rounded-lg text-white bg-primary hover:bg-primary-hover transition-colors font-normal">
-                Community
-              </div>
-              <button
-                onClick={() => setDarkMode(!darkMode)}
-                className={`p-2 rounded-lg ${
-                  darkMode
-                    ? "bg-gray-700 hover:bg-gray-600 text-white"
-                    : "bg-gray-100 hover:bg-gray-200 text-gray-900"
-                } transition-colors`}
-                aria-label={
-                  darkMode ? "Switch to light mode" : "Switch to dark mode"
-                }
-              >
-                {darkMode ? (
-                  <Sun className="h-5 w-5" />
-                ) : (
-                  <Moon className="h-5 w-5" />
-                )}
-              </button>
-            </div>
-          </div>
-        </div>
-      </header>
-
+    <div className={`min-h-screen ${darkMode ? "bg-gray-900" : "bg-gray-50"}`}>
+      <Navbar darkMode={darkMode} setDarkMode={setDarkMode} />
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="space-y-8">
           <div className="space-y-6">
@@ -226,11 +197,14 @@ const Index = () => {
                       <span className="text-sm">Save</span>
                     </button>
 
-                    <button className="flex items-center btn-primary">
+                    <button
+                      onClick={handlePost}
+                      className="flex items-center btn-primary"
+                      aria-label="Post recipe"
+                    >
                       <Send className="h-4 w-4 mr-2" />
                       <span className="text-sm">Post</span>
                     </button>
-
                   </div>
                 </div>
               </div>
