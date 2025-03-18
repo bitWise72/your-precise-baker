@@ -8,7 +8,8 @@ import Index from "./pages/Index"
 import NotFound from "./pages/NotFound"
 import ReviewPost from "./pages/ReviewPost"
 import Community from "./pages/Community"
-import { Login } from "./components/Login"
+import Login from "./components/Login"
+import ProtectedRoute from "./components/ProtectedRoute"
 const queryClient = new QueryClient()
 
 const App = () => (
@@ -20,8 +21,16 @@ const App = () => (
         <Sonner />
         <Router>
           <Routes>
-            <Route path="/" element={<Login />} />
-            <Route path="/home" element={<Index />}/>
+            <Route path="/login" element={<Login />} />
+            <Route
+              path="/home"
+              element={
+                <ProtectedRoute>
+                  <Index />
+                </ProtectedRoute>
+              }
+            />
+            {/* <Route path="/home" element={<Index />} /> */}
             <Route path="/review-post" element={<ReviewPost />} />
             <Route path="/community" element={<Community />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}

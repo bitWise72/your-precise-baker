@@ -1,48 +1,22 @@
-import { GoogleLogin, googleLogout } from "@react-oauth/google";
-import { useState } from "react";
-import { jwtDecode } from "jwt-decode";
-import GoogleLoginButton from "@/context/GoogleAuthProvider";
+import { signInWithGoogle } from "../services/firebase"
+import { useAuth } from "../contexts/AuthContext"
+import { useNavigate } from "react-router-dom"
+import { useEffect } from "react"
 
-type User = {
-  name: string;
-  email: string;
-  picture: string;
-};
+const Login = () => {
+  const { user } = useAuth()
+  const navigate = useNavigate()
 
-export const Login = () => {
-  const [user, setUser] = useState<User | null>(null);
+  useEffect(() => {
+    if (user) navigate("/home")
+  }, [user, navigate])
 
   return (
-    // <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
-    //   {!user ? (
-    //     <GoogleLogin
-    //       onSuccess={(credentialResponse) => {
-    //         const decoded = jwtDecode(credentialResponse.credential!) as User;
-    //         setUser(decoded);
-    //         console.log("User Info:", decoded);
-    //       }}
-    //       onError={() => console.log("Login Failed")}
-    //     />
-    //   ) : (
-    //     <div className="bg-white p-6 rounded-lg shadow-md text-center">
-    //       <img src={user.picture} alt={user.name} className="w-16 h-16 rounded-full mx-auto" />
-    //       <h3 className="text-lg font-semibold mt-2">{user.name}</h3>
-    //       <p className="text-gray-600">{user.email}</p>
-    //       <button
-    //         onClick={() => {
-    //           googleLogout();
-    //           setUser(null);
-    //         }}
-    //         className="mt-4 bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600"
-    //       >
-    //         Logout
-    //       </button>
-    //     </div>
-    //   )}
-    // </div>
     <div>
-    <h2>Google Login</h2>
-    <GoogleLoginButton />
-  </div>
-  );
-};
+      <h1>Login</h1>
+      <button onClick={signInWithGoogle}>Sign in with Google</button>
+    </div>
+  )
+}
+
+export default Login
