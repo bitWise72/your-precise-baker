@@ -3,9 +3,11 @@ import { Moon, Sun } from "lucide-react"
 interface NavbarProps {
   darkMode: boolean
   setDarkMode: (value: boolean) => void
+  name: string | null
+  image: string | null
 }
 
-const Navbar = ({ darkMode, setDarkMode }: NavbarProps) => {
+const Navbar = ({ darkMode, setDarkMode, name, image }: NavbarProps) => {
   return (
     <header className={`${darkMode ? "bg-gray-800" : "bg-white"} shadow-sm`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
@@ -47,6 +49,10 @@ const Navbar = ({ darkMode, setDarkMode }: NavbarProps) => {
                 <Moon className="h-5 w-5" />
               )}
             </button>
+            <div className="flex items-center space-x-4">
+              <img src={image} alt="User" className="w-10 h-10 rounded-full" />
+              <p>{name}</p>
+            </div>
           </div>
         </div>
       </div>

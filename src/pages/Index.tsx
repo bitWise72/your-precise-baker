@@ -151,9 +151,14 @@ const Index = () => {
 
   return (
     <div className={`min-h-screen ${darkMode ? "bg-gray-900" : "bg-gray-50"}`}>
-      <Navbar darkMode={darkMode} setDarkMode={setDarkMode} />
+      <Navbar
+        darkMode={darkMode}
+        setDarkMode={setDarkMode}
+        name={user?.displayName}
+        image={user?.photoURL}
+      />
       <div>
-        <h1>Welcome, {user?.displayName}!</h1>
+        {/* <h1>Welcome, {user?.displayName}!</h1> */}
         <button onClick={logout}>Logout</button>
       </div>
 
