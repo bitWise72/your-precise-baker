@@ -11,6 +11,8 @@ import { Send } from "lucide-react"
 import { useNavigate } from "react-router-dom"
 import Navbar from "@/components/Navbar"
 import { useDarkMode } from "@/contexts/DarkModeContext"
+import { useAuth } from "../contexts/AuthContext"
+import { logout } from "../services/firebase"
 
 const STORAGE_KEY = "saved_recipes"
 
@@ -145,9 +147,21 @@ const Index = () => {
     })
   }
 
+  const { user } = useAuth()
+
   return (
     <div className={`min-h-screen ${darkMode ? "bg-gray-900" : "bg-gray-50"}`}>
-      <Navbar darkMode={darkMode} setDarkMode={setDarkMode} />
+      <Navbar
+        darkMode={darkMode}
+        setDarkMode={setDarkMode}
+        name={user?.displayName}
+        image={user?.photoURL}
+      />
+      <div>
+        {/* <h1>Welcome, {user?.displayName}!</h1> */}
+        <button onClick={logout}>Logout</button>
+      </div>
+
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="space-y-8">
           <div className="space-y-6">
