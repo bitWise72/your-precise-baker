@@ -1,9 +1,10 @@
-import express from "express"
+import express, { Request, Response } from "express"
 import passport from "passport"
 import jwt from "jsonwebtoken"
-import axios from "axios"
 import { IUser } from "../models/user"
+import User from "../models/user"
 import cookieParser from "cookie-parser"
+import axios from "axios"
 
 // Extend the Request interface to include cookies
 declare global {
@@ -16,6 +17,7 @@ declare global {
 
 const router = express.Router()
 router.use(cookieParser())
+router.use(express.json())
 
 router.get(
   "/google",
@@ -99,5 +101,32 @@ router.get("/logout", (req, res) => {
     res.status(200).json({ message: "Logged out successfully" })
   })
 })
+
+router.post("/post", async (req, res) => {
+  try {
+    const { googleId, post } = req.body;
+
+    if (!googleId || !post) {
+       res.status(400).json({ message: "Google ID and post data are required." });
+       return;
+    }
+
+    // Find user by googleId
+    const user = await User.findOne({ googleId });
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found." });
+    }
+
+    // Add the new post to the user's posts array
+    user.posts.push(post);
+    await user.save();
+
+    res.status(201).json({ message: "Post added successfully!", user });
+  } catch (error) {
+    console.error("Error adding post:", error);
+    res.status(500).json({ message: "Internal Server Error." });
+  }
+});
 
 export default router
