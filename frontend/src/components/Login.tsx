@@ -1,7 +1,7 @@
-import { signInWithGoogle } from "../services/firebase"
 import { useAuth } from "../contexts/AuthContext"
 import { useNavigate } from "react-router-dom"
 import { useEffect } from "react"
+import GoogleAuth from "./GoogleAuth"
 
 const Login = () => {
   const { user } = useAuth()
@@ -14,7 +14,7 @@ const Login = () => {
   return (
     <div>
       <h1>Login</h1>
-      <button onClick={signInWithGoogle}>Sign in with Google</button>
+      <GoogleAuth/>
     </div>
   )
 }

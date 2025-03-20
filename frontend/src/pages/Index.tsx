@@ -12,11 +12,11 @@ import { useNavigate } from "react-router-dom"
 import Navbar from "@/components/Navbar"
 import { useDarkMode } from "@/contexts/DarkModeContext"
 import { useAuth } from "../contexts/AuthContext"
-import { logout } from "../services/firebase"
 
 const STORAGE_KEY = "saved_recipes"
 
 const Index = () => {
+  const [user, setUser] = useState(null);
   const { darkMode, setDarkMode } = useDarkMode()
   const [recipe, setRecipe] = useState<Recipe | null>(null)
   const [loading, setLoading] = useState(false)
@@ -147,20 +147,28 @@ const Index = () => {
     })
   }
 
-  const { user } = useAuth()
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const name = params.get("name");
+    const email = params.get("email");
+    const image = params.get("image");
+
+    if (name && email && image) {
+      const userData = { name, email, image };
+      localStorage.setItem("user", JSON.stringify(userData)); // ✅ Store in localStorage
+      setUser(userData);
+      console.log(userData);
+    }
+  }, []);
 
   return (
     <div className={`min-h-screen ${darkMode ? "bg-gray-900" : "bg-gray-50"}`}>
       <Navbar
         darkMode={darkMode}
         setDarkMode={setDarkMode}
-        name={user?.displayName}
-        image={user?.photoURL}
+        name={user?.name}
+        image={user?.image}
       />
-      <div>
-        {/* <h1>Welcome, {user?.displayName}!</h1> */}
-        <button onClick={logout}>Logout</button>
-      </div>
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="space-y-8">

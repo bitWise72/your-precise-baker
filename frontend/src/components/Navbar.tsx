@@ -7,6 +7,23 @@ interface NavbarProps {
   image: string | null
 }
 
+
+const handleLogout = async () => {
+  try {
+    await fetch("http://localhost:5000/auth/logout", { method: "GET", credentials: "include" });
+
+    // ✅ Clear ALL stored authentication data
+    localStorage.removeItem("token");
+    sessionStorage.removeItem("token");
+    document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+
+    // ✅ Force full page reload to clear session
+    window.location.href = "/login"; 
+  } catch (error) {
+    console.error("Logout failed:", error);
+  }
+};  
+
 const Navbar = ({ darkMode, setDarkMode, name, image }: NavbarProps) => {
   return (
     <header className={`${darkMode ? "bg-gray-800" : "bg-white"} shadow-sm`}>
@@ -53,6 +70,9 @@ const Navbar = ({ darkMode, setDarkMode, name, image }: NavbarProps) => {
               <img src={image} alt="User" className="w-10 h-10 rounded-full" />
               <p>{name}</p>
             </div>
+            <div>
+            <button onClick={handleLogout}>Logout</button>
+          </div>
           </div>
         </div>
       </div>
