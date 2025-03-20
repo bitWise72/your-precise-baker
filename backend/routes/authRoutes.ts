@@ -1,8 +1,8 @@
-import express, { Request, Response } from "express"
+import express, { Request, Response, NextFunction } from "express";
 import passport from "passport"
 import jwt from "jsonwebtoken"
-import { IUser } from "../models/user"
-import User from "../models/user"
+import User, { IUser } from "../models/user";
+
 import cookieParser from "cookie-parser"
 import axios from "axios"
 
@@ -101,21 +101,23 @@ router.get("/logout", (req, res) => {
     res.status(200).json({ message: "Logged out successfully" })
   })
 })
+ // Ensure this path is correct
 
-router.post("/post", async (req, res) => {
+
+ router.post("/post", async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
     const { googleId, post } = req.body;
 
     if (!googleId || !post) {
-       res.status(400).json({ message: "Google ID and post data are required." });
-       return;
+      res.status(400).json({ message: "Google ID and post data are required." });
+      return;
     }
 
     // Find user by googleId
     const user = await User.findOne({ googleId });
-
     if (!user) {
-      return res.status(404).json({ message: "User not found." });
+      res.status(404).json({ message: "User not found." });
+      return;
     }
 
     // Add the new post to the user's posts array
@@ -129,4 +131,4 @@ router.post("/post", async (req, res) => {
   }
 });
 
-export default router
+export default router;
