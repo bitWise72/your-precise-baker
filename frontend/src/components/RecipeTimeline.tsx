@@ -152,7 +152,7 @@ const RecipeTimeline: React.FC<RecipeTimelineProps> = ({
                         darkMode ? "text-white" : "text-gray-900"
                       }`}
                     >
-                      {capitalizeFirstLetter(stepKey)}
+                      Step {index + 1}
                     </h3>
                     <p
                       className={`mt-1 text-sm leading-snug px-4 ${

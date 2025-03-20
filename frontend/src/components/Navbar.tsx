@@ -7,22 +7,24 @@ interface NavbarProps {
   image: string | null
 }
 
-
 const handleLogout = async () => {
   try {
-    await fetch("http://localhost:5000/auth/logout", { method: "GET", credentials: "include" });
+    await fetch("http://localhost:5000/auth/logout", {
+      method: "GET",
+      credentials: "include",
+    })
 
     // ✅ Clear ALL stored authentication data
-    localStorage.removeItem("token");
-    sessionStorage.removeItem("token");
-    document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+    localStorage.removeItem("token")
+    sessionStorage.removeItem("token")
+    document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;"
 
     // ✅ Force full page reload to clear session
-    window.location.href = "/login"; 
+    window.location.href = "/login"
   } catch (error) {
-    console.error("Logout failed:", error);
+    console.error("Logout failed:", error)
   }
-};  
+}
 
 const Navbar = ({ darkMode, setDarkMode, name, image }: NavbarProps) => {
   return (
@@ -67,12 +69,21 @@ const Navbar = ({ darkMode, setDarkMode, name, image }: NavbarProps) => {
               )}
             </button>
             <div className="flex items-center space-x-4">
-              <img src={image} alt="User" className="w-10 h-10 rounded-full" />
-              <p>{name}</p>
+              <img
+                src={`./assets/${Math.floor(Math.random() * 8) + 1}.png`}
+                // src={`../${Math.floor(Math.random() * 8) + 1}.jpg`}
+                className="h-16 rounded-full"
+                alt="User"
+              />
             </div>
             <div>
-            <button onClick={handleLogout}>Logout</button>
-          </div>
+              <div
+                onClick={handleLogout}
+                className="text-center p-2.5 cursor-pointer lg:font-semibold rounded-lg text-white bg-primary hover:bg-primary-hover transition-colors font-normal"
+              >
+                Logout
+              </div>
+            </div>
           </div>
         </div>
       </div>
