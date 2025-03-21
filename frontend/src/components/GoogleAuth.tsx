@@ -2,7 +2,7 @@ import React from "react"
 
 const GoogleAuth: React.FC = () => {
   const handleLogin = () => {
-    window.location.href = "http://localhost:5000/auth/google" // ✅ Redirect to Google OAuth
+    window.location.href = `${import.meta.env.VITE_BACKEND_PORT}/auth/google`
   }
 
   return (

@@ -16,10 +16,9 @@ interface IRecipe {
 interface IPost {
   title: string;
   description: string;
-  images: string[];
-  imageUrl: string;
+  imageUrl: [string];
   recipe: IRecipe;
-  tags: string[];
+  tags: [string];
   createdAt: Date;
 }
 
@@ -48,8 +47,7 @@ const RecipeSchema: Schema = new Schema({
 const PostSchema: Schema = new Schema({
   title: { type: String, required: true },
   description: { type: String, required: true },
-  images: { type: [String], default: [] }, // Array of image URLs
-  imageUrl: { type: String, required: true }, // Main image URL
+  imageUrl: { type: [String], required: true }, // Main image URL
   recipe: { type: RecipeSchema, required: true }, // Recipe containing steps
   tags: { type: [String], default: [] }, // Tags for categorization
   createdAt: { type: Date, default: Date.now },

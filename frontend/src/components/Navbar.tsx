@@ -9,7 +9,7 @@ interface NavbarProps {
 
 const handleLogout = async () => {
   try {
-    await fetch("http://localhost:5000/auth/logout", {
+    await fetch(`${import.meta.env.VITE_BACKEND_PORT}/auth/logout`, {
       method: "GET",
       credentials: "include",
     })

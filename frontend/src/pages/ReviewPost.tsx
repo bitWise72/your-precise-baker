@@ -4,9 +4,6 @@ import { Upload, X, Camera, Clock, Save } from "lucide-react"
 import type { Recipe } from "@/services/recipeService"
 import Navbar from "@/components/Navbar"
 import { useDarkMode } from "@/contexts/DarkModeContext"
-import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
-import { addDoc, collection } from "firebase/firestore";
-import { db, storage } from "../services/firebase";
 
 interface RecipeFormData {
   title: string;
@@ -42,12 +39,6 @@ const ReviewPost = () => {
     }
   }, [location])
 
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) {
-      const files = Array.from(e.target.files);
-      setFormData((prev) => ({ ...prev, images: [...prev.images, ...files] }));
-    }
-  };
 
   const removeImage = (index: number) => {
     setFormData((prev) => ({
@@ -62,21 +53,38 @@ const ReviewPost = () => {
       alert("Title and description are required!");
       return;
     }
-
+  
     setLoading(true);
     try {
-      const imageUrls = await uploadImages();
-
+      // Upload images to Cloudinary
+      const imageUrls = await uploadToCloudinary(formData.images);
+  
       const newRecipe = {
         title: formData.title,
         description: formData.description,
-        images: imageUrls,
+        imageUrl: imageUrls, // Now using Cloudinary URLs
         recipe: formData.recipe,
         tags: formData.tags,
         createdAt: new Date(),
       };
-      console.log(newRecipe);
-      await addDoc(collection(db, "recipes"), newRecipe);
+  
+      // console.log(newRecipe);
+      const googleID = JSON.parse(localStorage.getItem("user") || '{}').id;
+      // console.log(googleID);
+      // Send the recipe data to your own backend (replace with actual API endpoint)
+      const response = await fetch(`${import.meta.env.VITE_BACKEND_PORT}/auth/post`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({googleId:googleID,
+          post:newRecipe}),
+      });
+  
+      if (!response.ok) {
+        throw new Error("Failed to post recipe.");
+      }
+  
       alert("Recipe posted successfully!");
       navigate("/community");
     } catch (error) {
@@ -85,20 +93,69 @@ const ReviewPost = () => {
     } finally {
       setLoading(false);
     }
-  }
-
-  const uploadImages = async () => {
-    const uploadedImageUrls = await Promise.all(
-      formData.images.map(async (image) => {
-        const storageRef = ref(storage, `recipes/${image.name}-${Date.now()}`);
-        await uploadBytes(storageRef, image);
-        return await getDownloadURL(storageRef);
-      })
-    );
-    return uploadedImageUrls;
   };
+  
 
+  // const uploadImages = async () => {
+  //   const uploadedImageUrls = await Promise.all(
+  //     formData.images.map(async (image) => {
+  //       const storageRef = ref(storage, `recipes/${image.name}-${Date.now()}`);
+  //       await uploadBytes(storageRef, image);
+  //       return await getDownloadURL(storageRef);
+  //     })
+  //   );
+  //   return uploadedImageUrls;
+  // };
+   const cloudname=import.meta.env.VITE_CLOUD_NAME;
+   const preset=import.meta.env.VITE_UPLOAD_PRESET;
 
+  const uploadToCloudinary = async (files: File[]): Promise<string[]> => {
+    const uploadPromises = files.map(async (file) => {
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("upload_preset", `${preset}`);
+      formData.append("cloud_name", `${cloudname}`);
+  
+      try {
+        const response = await fetch(`https://api.cloudinary.com/v1_1/${cloudname}/image/upload`, {
+          method: "POST",
+          body: formData,
+        });
+        const data = await response.json();
+        return data.secure_url;
+      } catch (error) {
+        console.error("Cloudinary upload error:", error);
+        return "";
+      }
+    });
+  
+    return Promise.all(uploadPromises);
+  };
+  
+  // Function to handle image selection and upload
+  const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (!event.target.files) return;
+    
+    const selectedFiles = Array.from(event.target.files);
+    
+    // Update images array with selected files
+    setFormData((prev) => ({
+      ...prev,
+      images: [...prev.images, ...selectedFiles],
+    }));
+  
+    // Upload images to Cloudinary
+    setLoading(true);
+    const uploadedUrls = await uploadToCloudinary(selectedFiles);
+    
+    // Update imageUrls with uploaded URLs
+    setFormData((prev) => ({
+      ...prev,
+      imageUrls: [...prev.imageUrls, ...uploadedUrls],
+    }));
+    setLoading(false);
+  };
+  
   return (
     <div className={`min-h-screen ${darkMode ? "bg-gray-900" : "bg-gray-50"}`}>
       <Navbar darkMode={darkMode} setDarkMode={setDarkMode} name={""} image={""} />

@@ -10,7 +10,7 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     const checkUser = async () => {
       try {
-        const res = await axios.get("http://localhost:5000/auth/me", { withCredentials: true })
+        const res = await axios.get(`${import.meta.env.VITE_BACKEND_PORT}/auth/me`, { withCredentials: true })
         setUser(res.data)
       } catch (error) {
         setUser(null)
@@ -24,8 +24,8 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (email, password) => {
     try {
-      await axios.post("http://localhost:5000/auth/login", { email, password }, { withCredentials: true })
-      const res = await axios.get("http://localhost:5000/auth/me", { withCredentials: true })
+      await axios.post(`${import.meta.env.VITE_BACKEND_PORT}/auth/login`, { email, password }, { withCredentials: true })
+      const res = await axios.get(`${import.meta.env.VITE_BACKEND_PORT}/auth/me`, { withCredentials: true })
       setUser(res.data) // ✅ Ensure user state is updated after login
     } catch (error) {
       console.error("Login failed", error)

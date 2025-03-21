@@ -23,32 +23,17 @@ router.get(
   "/google",
   passport.authenticate("google", {
     scope: ["profile", "email"],
-    prompt: "select_account", // Forces Google to ask for an email every time
+    prompt: "select_account",
   })
 )
-
-router.get("/proxy-image", async (req, res) => {
-  const imageUrl = req.query.url
-  if (typeof imageUrl !== "string") {
-    res.status(400).send("Invalid image URL")
-    return
-  }
-  try {
-    const response = await axios.get(imageUrl, { responseType: "arraybuffer" })
-    res.set("Content-Type", "image/jpeg")
-    res.send(response.data)
-  } catch (error) {
-    res.status(500).send("Error fetching image")
-  }
-})
 
 router.get(
   "/google/callback",
   passport.authenticate("google", {
-    failureRedirect: "/login",
+    failureRedirect: "/",
   }),
   (req, res) => {
-    if (!req.user) return res.redirect("/login")
+    if (!req.user) return res.redirect("/")
 
     const user = req.user as IUser & { _id: string } // ✅ Cast user to include _id
     if (!process.env.JWT_SECRET) {
@@ -59,17 +44,15 @@ router.get(
     })
 
     res.cookie("token", token, { httpOnly: true })
-
     // ✅ Redirect to frontend with user data in query params
     res.redirect(
-      `http://localhost:8080/home?name=${user.name}&email=${user.email}&image=${user.picture}`
+      `http://localhost:8080/home?name=${user.name}&email=${user.email}&image=${user.picture}&id=${user._id}`
     )
   }
 )
 
 router.get("/me", (req, res) => {
   const token = req.cookies?.token // Access the token from cookies
-  console.log(token)
   if (!token) {
     res.status(401).json({ message: "Not logged in" })
     return
@@ -107,14 +90,15 @@ router.get("/logout", (req, res) => {
  router.post("/post", async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
     const { googleId, post } = req.body;
-
+    // console.log(googleId,post);
     if (!googleId || !post) {
       res.status(400).json({ message: "Google ID and post data are required." });
       return;
     }
 
     // Find user by googleId
-    const user = await User.findOne({ googleId });
+    const user = await User.findById(googleId);
+    // console.log(user);
     if (!user) {
       res.status(404).json({ message: "User not found." });
       return;

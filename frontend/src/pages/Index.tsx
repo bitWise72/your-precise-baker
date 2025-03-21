@@ -152,12 +152,16 @@ const Index = () => {
     const name = params.get("name");
     const email = params.get("email");
     const image = params.get("image");
+    const id=params.get("id");
 
-    if (name && email && image) {
-      const userData = { name, email, image };
+    if (name && email && image && id) {
+      const userData = { name, email, image,id };
       localStorage.setItem("user", JSON.stringify(userData)); // ✅ Store in localStorage
       setUser(userData);
       console.log(userData);
+    }
+    else{
+      console.log("eroor");
     }
   }, []);
 
