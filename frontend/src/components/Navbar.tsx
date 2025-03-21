@@ -1,4 +1,5 @@
 import { Moon, Sun } from "lucide-react"
+import { useNavigate } from "react-router-dom"
 
 interface NavbarProps {
   darkMode: boolean
@@ -27,6 +28,7 @@ const handleLogout = async () => {
 }
 
 const Navbar = ({ darkMode, setDarkMode, name, image }: NavbarProps) => {
+  const navigate = useNavigate();
   return (
     <header className={`${darkMode ? "bg-gray-800" : "bg-white"} shadow-sm`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
@@ -48,7 +50,7 @@ const Navbar = ({ darkMode, setDarkMode, name, image }: NavbarProps) => {
           </div>
 
           <div className="flex items-center space-x-4">
-            <div className="text-center p-2.5 cursor-pointer lg:font-semibold rounded-lg text-white bg-primary hover:bg-primary-hover transition-colors font-normal">
+            <div className="text-center p-2.5 cursor-pointer lg:font-semibold rounded-lg text-white bg-primary hover:bg-primary-hover transition-colors font-normal" onClick={()=>{ navigate("/community")}}>
               Community
             </div>
             <button

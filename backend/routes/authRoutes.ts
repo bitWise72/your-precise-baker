@@ -2,9 +2,12 @@ import express, { Request, Response, NextFunction } from "express";
 import passport from "passport"
 import jwt from "jsonwebtoken"
 import User, { IUser } from "../models/user";
-
+import { v2 as cloudinary } from "cloudinary";
 import cookieParser from "cookie-parser"
 import axios from "axios"
+import dotenv from "dotenv"
+
+dotenv.config();
 
 // Extend the Request interface to include cookies
 declare global {
@@ -115,4 +118,49 @@ router.get("/logout", (req, res) => {
   }
 });
 
+router.post("/yourPosts",async (req: Request, res: Response, next: NextFunction): Promise<void> =>{
+  const {id} = req.body;
+  if(!id){
+    res.status(400).json({ message: "Google ID and post data are required." });
+    return;
+  }
+  try {
+    const user = await User.findById(id);
+    if (!user) {
+      res.status(404).json({ message: "User not found." });
+      return;
+    }
+    res.status(201).json({ message: "Fetched", posts: user.posts });
+  } catch (error) {
+    
+  }
+})
+
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+  secure: true,
+});
+
+// Route to Get Signed Upload URL
+router.get("/get-signed-url", (req, res) => {
+  if (!process.env.CLOUDINARY_API_SECRET) {
+    throw new Error("CLOUDINARY_API_SECRET is not defined in environment variables");
+  }
+  try {
+    const publicId = req.query.public_id;
+    if (!publicId || typeof publicId !== 'string') {
+      res.status(400).json({ error: "Invalid public_id parameter" });
+      return;
+    }
+    const signedUrl = cloudinary.utils.private_download_url(publicId, "jpg", {
+      attachment: true,
+    });
+    res.json({ signedUrl });
+  } catch (error) {
+    console.error("Error generating signed URL:", error);
+    res.status(500).json({ error: "Failed to generate signed URL" });
+  }
+});
 export default router;

@@ -4,6 +4,7 @@ import { Upload, X, Camera, Clock, Save } from "lucide-react"
 import type { Recipe } from "@/services/recipeService"
 import Navbar from "@/components/Navbar"
 import { useDarkMode } from "@/contexts/DarkModeContext"
+import Loading from '../components/Loading.tsx'
 
 interface RecipeFormData {
   title: string;
@@ -94,35 +95,27 @@ const ReviewPost = () => {
       setLoading(false);
     }
   };
+
+   const uploadToCloudinary = async (files: File[]) => {
+    const cloudName = import.meta.env.VITE_CLOUD_NAME;
+    const uploadPreset = import.meta.env.VITE_UPLOAD_PRESET;
   
-
-  // const uploadImages = async () => {
-  //   const uploadedImageUrls = await Promise.all(
-  //     formData.images.map(async (image) => {
-  //       const storageRef = ref(storage, `recipes/${image.name}-${Date.now()}`);
-  //       await uploadBytes(storageRef, image);
-  //       return await getDownloadURL(storageRef);
-  //     })
-  //   );
-  //   return uploadedImageUrls;
-  // };
-   const cloudname=import.meta.env.VITE_CLOUD_NAME;
-   const preset=import.meta.env.VITE_UPLOAD_PRESET;
-
-  const uploadToCloudinary = async (files: File[]): Promise<string[]> => {
     const uploadPromises = files.map(async (file) => {
       const formData = new FormData();
       formData.append("file", file);
-      formData.append("upload_preset", `${preset}`);
-      formData.append("cloud_name", `${cloudname}`);
+      formData.append("upload_preset", uploadPreset); // Unsigned preset
   
       try {
-        const response = await fetch(`https://api.cloudinary.com/v1_1/${cloudname}/image/upload`, {
-          method: "POST",
-          body: formData,
-        });
+        const response = await fetch(
+          `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
+          {
+            method: "POST",
+            body: formData,
+          }
+        );
+  
         const data = await response.json();
-        return data.secure_url;
+        return data.secure_url; // Cloudinary image URL
       } catch (error) {
         console.error("Cloudinary upload error:", error);
         return "";
@@ -131,6 +124,7 @@ const ReviewPost = () => {
   
     return Promise.all(uploadPromises);
   };
+  
   
   // Function to handle image selection and upload
   const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -157,7 +151,13 @@ const ReviewPost = () => {
   };
   
   return (
-    <div className={`min-h-screen ${darkMode ? "bg-gray-900" : "bg-gray-50"}`}>
+    <div className={`min-h-screen ${darkMode ? "bg-gray-900" : "bg-gray-50"} relative` }>
+      <div className="z-50 absoulte">
+        {
+          loading && <Loading/>
+        }
+      </div>
+      
       <Navbar darkMode={darkMode} setDarkMode={setDarkMode} name={""} image={""} />
       <div className="max-w-4xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
         <form onSubmit={handleSubmit} className="space-y-8">
