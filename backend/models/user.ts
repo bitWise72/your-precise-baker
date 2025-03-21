@@ -7,10 +7,19 @@ interface IStep {
   time: number[]; // [min, max]
 }
 
-// Recipe (Post) interface
-interface IPost {
-  name: string;
+// Recipe interface
+interface IRecipe {
   steps: IStep[];
+}
+
+// Post (Recipe) interface
+interface IPost {
+  title: string;
+  description: string;
+  images: string[];
+  imageUrl: string;
+  recipe: IRecipe;
+  tags: string[];
   createdAt: Date;
 }
 
@@ -30,14 +39,23 @@ const StepSchema: Schema = new Schema({
   time: { type: [Number], required: true }, // [min, max] time range
 });
 
-// Recipe (Post) Schema
-const PostSchema: Schema = new Schema({
-  name: { type: String, required: true },
+// Recipe Schema (Containing Steps)
+const RecipeSchema: Schema = new Schema({
   steps: { type: [StepSchema], required: true },
+});
+
+// Updated Post (Recipe) Schema
+const PostSchema: Schema = new Schema({
+  title: { type: String, required: true },
+  description: { type: String, required: true },
+  images: { type: [String], default: [] }, // Array of image URLs
+  imageUrl: { type: String, required: true }, // Main image URL
+  recipe: { type: RecipeSchema, required: true }, // Recipe containing steps
+  tags: { type: [String], default: [] }, // Tags for categorization
   createdAt: { type: Date, default: Date.now },
 });
 
-// Updated User Schema with `posts`
+// Updated User Schema with Embedded Posts
 const UserSchema: Schema = new Schema({
   googleId: { type: String, required: true },
   name: { type: String, required: true },

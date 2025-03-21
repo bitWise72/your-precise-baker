@@ -1,10 +1,6 @@
-import { initializeApp } from "firebase/app"
-import {
-  getAuth,
-  GoogleAuthProvider,
-  signInWithPopup,
-  signOut,
-} from "firebase/auth"
+import { initializeApp } from "firebase/app";
+import { getFirestore } from "firebase/firestore";
+import { getStorage } from "firebase/storage";
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
@@ -15,27 +11,7 @@ const firebaseConfig = {
   appId: import.meta.env.VITE_FIREBASE_APP_ID,
 }
 
-const app = initializeApp(firebaseConfig)
-export const auth = getAuth(app)
-export const googleProvider = new GoogleAuthProvider()
+const app = initializeApp(firebaseConfig);
+export const db = getFirestore(app);
+export const storage = getStorage(app);
 
-// 🔹 Force Google account selection every time
-googleProvider.setCustomParameters({
-  prompt: "select_account",
-})
-
-// Function for Google Login
-export const signInWithGoogle = async () => {
-  try {
-    const result = await signInWithPopup(auth, googleProvider)
-    console.log(result)
-    return result.user
-  } catch (error) {
-    console.error("Error signing in:", error)
-  }
-}
-
-// Function to Logout
-export const logout = async () => {
-  await signOut(auth)
-}

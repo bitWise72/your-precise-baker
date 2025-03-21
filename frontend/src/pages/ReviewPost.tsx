@@ -4,23 +4,29 @@ import { Upload, X, Camera, Clock, Save } from "lucide-react"
 import type { Recipe } from "@/services/recipeService"
 import Navbar from "@/components/Navbar"
 import { useDarkMode } from "@/contexts/DarkModeContext"
+import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
+import { addDoc, collection } from "firebase/firestore";
+import { db, storage } from "../services/firebase";
 
 interface RecipeFormData {
-  title: string
-  description: string
-  images: string[]
-  recipe: Recipe
-  tags: string[]
+  title: string;
+  description: string;
+  images: File[];
+  imageUrls: string[];
+  recipe: Recipe;
+  tags: string[];
 }
 
 const ReviewPost = () => {
   const location = useLocation()
   const navigate = useNavigate()
   const { darkMode, setDarkMode } = useDarkMode()
+  const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState<RecipeFormData>({
     title: "",
     description: "",
     images: [],
+    imageUrls: [],
     recipe: {} as Recipe,
     tags: [],
   })
@@ -37,17 +43,11 @@ const ReviewPost = () => {
   }, [location])
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files
-    if (files) {
-      const newImages = Array.from(files).map((file) =>
-        URL.createObjectURL(file)
-      )
-      setFormData((prev) => ({
-        ...prev,
-        images: [...prev.images, ...newImages],
-      }))
+    if (e.target.files) {
+      const files = Array.from(e.target.files);
+      setFormData((prev) => ({ ...prev, images: [...prev.images, ...files] }));
     }
-  }
+  };
 
   const removeImage = (index: number) => {
     setFormData((prev) => ({
@@ -57,20 +57,51 @@ const ReviewPost = () => {
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    // TODO: Implement post submission to backend
+    e.preventDefault();
+    if (!formData.title || !formData.description) {
+      alert("Title and description are required!");
+      return;
+    }
+
+    setLoading(true);
     try {
-      // Mock API call
-      await new Promise((resolve) => setTimeout(resolve, 1000))
-      navigate("/community")
+      const imageUrls = await uploadImages();
+
+      const newRecipe = {
+        title: formData.title,
+        description: formData.description,
+        images: imageUrls,
+        recipe: formData.recipe,
+        tags: formData.tags,
+        createdAt: new Date(),
+      };
+      console.log(newRecipe);
+      await addDoc(collection(db, "recipes"), newRecipe);
+      alert("Recipe posted successfully!");
+      navigate("/community");
     } catch (error) {
-      console.error("Failed to post recipe:", error)
+      console.error("Error posting recipe:", error);
+      alert("Failed to post recipe.");
+    } finally {
+      setLoading(false);
     }
   }
 
+  const uploadImages = async () => {
+    const uploadedImageUrls = await Promise.all(
+      formData.images.map(async (image) => {
+        const storageRef = ref(storage, `recipes/${image.name}-${Date.now()}`);
+        await uploadBytes(storageRef, image);
+        return await getDownloadURL(storageRef);
+      })
+    );
+    return uploadedImageUrls;
+  };
+
+
   return (
     <div className={`min-h-screen ${darkMode ? "bg-gray-900" : "bg-gray-50"}`}>
-      <Navbar darkMode={darkMode} setDarkMode={setDarkMode} />
+      <Navbar darkMode={darkMode} setDarkMode={setDarkMode} name={""} image={""} />
       <div className="max-w-4xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
         <form onSubmit={handleSubmit} className="space-y-8">
           {/* Header */}
@@ -82,59 +113,24 @@ const ReviewPost = () => {
           </div>
 
           {/* Image Upload Section */}
-          <div className="space-y-4">
-            <label
-              className={`block text-sm font-medium ${
-                darkMode ? "text-gray-200" : "text-gray-700"
-              }`}
-            >
-              Recipe Images
-            </label>
+          <div>
+            <label className="block text-sm font-medium">Recipe Images</label>
             <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
               {formData.images.map((image, index) => (
                 <div key={index} className="relative group">
-                  <img
-                    src={image}
-                    alt={`Recipe ${index + 1}`}
-                    className="h-40 w-full object-cover rounded-lg"
-                  />
+                  <img src={URL.createObjectURL(image)} alt="Recipe" className="h-40 w-full object-cover rounded-lg" />
                   <button
                     type="button"
                     onClick={() => removeImage(index)}
-                    className="absolute top-2 right-2 p-1 bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                    className="absolute top-2 right-2 p-1 bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100"
                   >
                     <X size={16} />
                   </button>
                 </div>
               ))}
-              <label
-                className={`h-40 flex items-center justify-center border-2 border-dashed rounded-lg cursor-pointer ${
-                  darkMode
-                    ? "border-gray-600 hover:border-gray-500"
-                    : "border-gray-300 hover:border-gray-400"
-                }`}
-              >
-                <div className="space-y-1 text-center">
-                  <Camera
-                    className={`mx-auto h-12 w-12 ${
-                      darkMode ? "text-gray-400" : "text-gray-400"
-                    }`}
-                  />
-                  <div
-                    className={`text-sm ${
-                      darkMode ? "text-gray-300" : "text-gray-600"
-                    }`}
-                  >
-                    Add Photos
-                  </div>
-                </div>
-                <input
-                  type="file"
-                  multiple
-                  accept="image/*"
-                  onChange={handleImageUpload}
-                  className="hidden"
-                />
+              <label className="h-40 flex items-center justify-center border-2 border-dashed rounded-lg cursor-pointer">
+                <Camera className="h-12 w-12 text-gray-400" />
+                <input type="file" multiple accept="image/*" onChange={handleImageUpload} className="hidden" />
               </label>
             </div>
           </div>
