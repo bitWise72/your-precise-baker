@@ -20,7 +20,7 @@ const handleLogout = async () => {
     document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;"
 
     // ✅ Force full page reload to clear session
-    window.location.href = "/login"
+    window.location.href = "/"
   } catch (error) {
     console.error("Logout failed:", error)
   }
