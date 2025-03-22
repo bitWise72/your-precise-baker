@@ -31,7 +31,7 @@ app.use(passport.session())
 
 app.use("/auth", authRoutes)
 
-app.get("/",(req,res)=>{
+app.get("/", (req, res) => {
   res.send("Backend is working")
 })
 

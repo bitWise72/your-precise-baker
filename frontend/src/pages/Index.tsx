@@ -16,7 +16,7 @@ import { useAuth } from "../contexts/AuthContext"
 const STORAGE_KEY = "saved_recipes"
 
 const Index = () => {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState(null)
   const { darkMode, setDarkMode } = useDarkMode()
   const [recipe, setRecipe] = useState<Recipe | null>(null)
   const [loading, setLoading] = useState(false)
@@ -148,22 +148,21 @@ const Index = () => {
   }
 
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const name = params.get("name");
-    const email = params.get("email");
-    const image = params.get("image");
-    const id=params.get("id");
+    const params = new URLSearchParams(window.location.search)
+    const name = params.get("name")
+    const email = params.get("email")
+    const image = params.get("image")
+    const id = params.get("id")
 
     if (name && email && image && id) {
-      const userData = { name, email, image,id };
-      localStorage.setItem("user", JSON.stringify(userData)); // ✅ Store in localStorage
-      setUser(userData);
-      console.log(userData);
+      const userData = { name, email, image, id }
+      localStorage.setItem("user", JSON.stringify(userData)) // ✅ Store in localStorage
+      setUser(userData)
+      console.log(userData)
+    } else {
+      console.log("error")
     }
-    else{
-      console.log("eroor");
-    }
-  }, []);
+  }, [])
 
   return (
     <div className={`min-h-screen ${darkMode ? "bg-gray-900" : "bg-gray-50"}`}>

@@ -23,7 +23,7 @@ const RecipeSearch = ({ onSearch, darkMode }: RecipeSearchProps) => {
           type="text"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          placeholder="Enter recipe name (e.g., Shakshuka 150 grams)"
+          placeholder="Enter recipe or search any recipe "
           className={`w-full px-4 py-3 pr-12 text-lg rounded-lg border ${
             darkMode
               ? "bg-gray-700 border-gray-600 text-white placeholder-gray-400"
