@@ -4,7 +4,6 @@ import jwt from "jsonwebtoken"
 import User, { IUser } from "../models/user";
 import { v2 as cloudinary } from "cloudinary";
 import cookieParser from "cookie-parser"
-import axios from "axios"
 import dotenv from "dotenv"
 
 dotenv.config();
