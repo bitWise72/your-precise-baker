@@ -219,9 +219,9 @@ const user = storedUser ? JSON.parse(storedUser) : null;
 
         {/* User Profile */}
         <div className="flex flex-col items-center space-y-3">
-          <img
+         <img
             src={user?.image || `./assets/${Math.floor(Math.random() * 8) + 1}.png`}
-            className="h-20 w-20 rounded-full object-cover border-4 shadow-xl transform transition-all duration-300 hover:scale-110 ${
+            className={`h-20 w-20 rounded-full object-cover border-4 shadow-xl transform transition-all duration-300 hover:scale-110 ${
               darkMode ? "border-gray-600" : "border-gray-300"
             }`}
             alt="User"
