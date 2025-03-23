@@ -29,6 +29,7 @@ const handleLogout = async () => {
 }
 
 const Navbar = ({ darkMode, setDarkMode, name, image }: NavbarProps) => {
+  const user=localStorgae("user");
   const navigate = useNavigate();
   const [isMenuOpen, setMenuOpen] = useState(false);
   return (
@@ -144,7 +145,7 @@ const Navbar = ({ darkMode, setDarkMode, name, image }: NavbarProps) => {
               {darkMode ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
             </button>
             <img
-              src={`./assets/${Math.floor(Math.random() * 8) + 1}.png`}
+              src={user?.image || `./assets/${Math.floor(Math.random() * 8) + 1}.png`}
               className="h-16 w-16 rounded-full object-cover"
               alt="User"
             />
@@ -201,7 +202,7 @@ const Navbar = ({ darkMode, setDarkMode, name, image }: NavbarProps) => {
     </button>
     <div className="flex flex-col items-center">
       <img
-        src={`./assets/${Math.floor(Math.random() * 8) + 1}.png`}
+        src={user?.image || `./assets/${Math.floor(Math.random() * 8) + 1}.png`}
         className="h-16 w-16 rounded-full object-cover border-2 border-gray-300 dark:border-gray-600 shadow-md"
         alt="User"
       />
