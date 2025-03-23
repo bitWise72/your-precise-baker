@@ -102,12 +102,12 @@ const user = storedUser ? JSON.parse(storedUser) : null;
     //   </div>
     // </header>
 
-    <header className={`${darkMode ? "bg-gray-800" : "bg-white"} shadow-sm`}>
+   <header className={`${darkMode ? "bg-gray-800" : "bg-white"} shadow-sm`}>
   <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
     <div className="flex items-center justify-between">
       {/* Logo and Title */}
       <div className="flex items-center space-x-3">
-        <a href="/">
+        <a href="/home">
           <img
             src="./logo.png"
             alt="Bawarchi.AI Logo"
@@ -178,14 +178,24 @@ const user = storedUser ? JSON.parse(storedUser) : null;
 
     {/* Mobile Navigation Menu */}
     {isMenuOpen && (
-      <div className="mt-4 md:hidden flex flex-col gap-5 p-6 backdrop-blur-xl bg-white/90 dark:bg-gray-900/90 rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-700 transition-all duration-500">
+      <div
+        className={`mt-4 md:hidden flex flex-col gap-5 p-6 backdrop-blur-xl rounded-2xl shadow-2xl border transition-all duration-500 ${
+          darkMode
+            ? "bg-gray-900/90 border-gray-700"
+            : "bg-white/90 border-gray-200"
+        }`}
+      >
         {/* Community Button */}
         <div
           onClick={() => {
             setMenuOpen(false);
             navigate("/community");
           }}
-          className="text-center p-3 cursor-pointer font-semibold rounded-xl text-white bg-gradient-to-r from-blue-500 to-indigo-600 hover:scale-105 transition-all duration-300 shadow-lg"
+          className={`text-center p-3 cursor-pointer font-semibold rounded-xl transition-all duration-300 shadow-lg ${
+            darkMode
+              ? "bg-gradient-to-r from-blue-600 to-indigo-700 text-white hover:brightness-125"
+              : "bg-gradient-to-r from-blue-500 to-indigo-600 text-white hover:brightness-90"
+          }`}
         >
           Community
         </div>
@@ -211,10 +221,16 @@ const user = storedUser ? JSON.parse(storedUser) : null;
         <div className="flex flex-col items-center space-y-3">
           <img
             src={user?.image || `./assets/${Math.floor(Math.random() * 8) + 1}.png`}
-            className="h-20 w-20 rounded-full object-cover border-4 border-gray-300 dark:border-gray-600 shadow-xl transform transition-all duration-300 hover:scale-110"
+            className="h-20 w-20 rounded-full object-cover border-4 shadow-xl transform transition-all duration-300 hover:scale-110 ${
+              darkMode ? "border-gray-600" : "border-gray-300"
+            }`}
             alt="User"
           />
-          <p className="text-sm text-gray-700 dark:text-gray-300 font-medium">
+          <p
+            className={`text-sm font-medium ${
+              darkMode ? "text-gray-300" : "text-gray-700"
+            }`}
+          >
             Welcome Back, <span className="font-bold">{user?.name || "Guest"}</span>!
           </p>
         </div>
@@ -225,7 +241,11 @@ const user = storedUser ? JSON.parse(storedUser) : null;
             setMenuOpen(false);
             handleLogout();
           }}
-          className="text-center p-3 cursor-pointer font-semibold rounded-xl text-white bg-gradient-to-r from-red-500 to-rose-600 hover:scale-105 transition-all duration-300 shadow-lg"
+          className={`text-center p-3 cursor-pointer font-semibold rounded-xl transition-all duration-300 shadow-lg ${
+            darkMode
+              ? "bg-gradient-to-r from-red-600 to-rose-700 text-white hover:brightness-125"
+              : "bg-gradient-to-r from-red-500 to-rose-600 text-white hover:brightness-90"
+          }`}
         >
           Logout
         </div>
@@ -233,7 +253,6 @@ const user = storedUser ? JSON.parse(storedUser) : null;
     )}
   </div>
 </header>
-
   )
 }
 
