@@ -1,4 +1,4 @@
-import { Moon, Sun, X, Menu } from "lucide-react" 
+import { Moon, Sun, X, Menu } from "lucide-react"
 import { useNavigate } from "react-router-dom"
 import { useState, useRef, useEffect } from "react"
 
