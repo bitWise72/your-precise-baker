@@ -174,42 +174,53 @@ const Navbar = ({ darkMode, setDarkMode, name, image }: NavbarProps) => {
 
         {/* Mobile Navigation Menu */}
         {isMenuOpen && (
-          <div className="mt-4 md:hidden flex flex-col gap-4">
-            <button
-              onClick={() => {
-                setMenuOpen(false);
-                navigate('/community');
-              }}
-              className="text-center p-2.5 cursor-pointer font-semibold rounded-lg text-white bg-primary hover:bg-primary-hover transition-colors"
-            >
-              Community
-            </button>
-            <button
-              onClick={() => {
-                setDarkMode(!darkMode);
-                setMenuOpen(false);
-              }}
-              className={`p-2 rounded-lg transition-colors ${darkMode ? 'bg-gray-700 hover:bg-gray-600 text-white' : 'bg-gray-100 hover:bg-gray-200 text-gray-900'}`}
-              aria-label={darkMode ? 'Switch to light mode' : 'Switch to dark mode'}
-            >
-              {darkMode ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
-            </button>
-            <img
-              src={`./assets/${Math.floor(Math.random() * 8) + 1}.png`}
-              className="h-16 w-16 rounded-full mx-auto object-cover"
-              alt="User"
-            />
-            <button
-              onClick={() => {
-                setMenuOpen(false);
-                handleLogout();
-              }}
-              className="text-center p-2.5 cursor-pointer font-semibold rounded-lg text-white bg-primary hover:bg-primary-hover transition-colors"
-            >
-              Logout
-            </button>
-          </div>
-        )}
+  <div className="mt-4 md:hidden flex flex-col gap-4 p-4 bg-gray-100 dark:bg-gray-800 rounded-xl shadow-lg">
+    <div
+      onClick={() => {
+        setMenuOpen(false);
+        navigate("/community");
+      }}
+      className="text-center p-3 cursor-pointer font-semibold rounded-lg text-white bg-blue-600 hover:bg-blue-700 transition-all duration-300 shadow-md"
+    >
+      Community
+    </div>
+    <button
+      onClick={() => {
+        setDarkMode(!darkMode);
+        setMenuOpen(false);
+      }}
+      className={`p-3 rounded-lg transition-all duration-300 shadow-md flex items-center justify-center gap-2 ${
+        darkMode
+          ? "bg-gray-700 hover:bg-gray-600 text-white"
+          : "bg-white hover:bg-gray-200 text-gray-900"
+      }`}
+      aria-label={darkMode ? "Switch to light mode" : "Switch to dark mode"}
+    >
+      {darkMode ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+      <span className="text-sm font-medium">{darkMode ? "Light Mode" : "Dark Mode"}</span>
+    </button>
+    <div className="flex flex-col items-center">
+      <img
+        src={`./assets/${Math.floor(Math.random() * 8) + 1}.png`}
+        className="h-16 w-16 rounded-full object-cover border-2 border-gray-300 dark:border-gray-600 shadow-md"
+        alt="User"
+      />
+      <p className="text-sm mt-2 text-gray-600 dark:text-gray-300 font-medium">
+        Welcome Back!
+      </p>
+    </div>
+    <div
+      onClick={() => {
+        setMenuOpen(false);
+        handleLogout();
+      }}
+      className="text-center p-3 cursor-pointer font-semibold rounded-lg text-white bg-red-600 hover:bg-red-700 transition-all duration-300 shadow-md"
+    >
+      Logout
+    </div>
+  </div>
+)}
+
       </div>
     </header>
 
