@@ -175,28 +175,22 @@ const Navbar = ({ darkMode, setDarkMode, name, image }: NavbarProps) => {
         {/* Mobile Navigation Menu */}
         {isMenuOpen && (
           <div className="mt-4 md:hidden flex flex-col gap-4">
-            <div
+            <button
               onClick={() => {
                 setMenuOpen(false);
-                navigate("/community");
+                navigate('/community');
               }}
-              className="text-center p-2.5 cursor-pointer lg:font-semibold rounded-lg text-white bg-primary hover:bg-primary-hover transition-colors font-normal"
+              className="text-center p-2.5 cursor-pointer font-semibold rounded-lg text-white bg-primary hover:bg-primary-hover transition-colors"
             >
               Community
-            </div>
+            </button>
             <button
               onClick={() => {
                 setDarkMode(!darkMode);
                 setMenuOpen(false);
               }}
-              className={`p-2 rounded-lg transition-colors ${
-                darkMode
-                  ? "bg-gray-700 hover:bg-gray-600 text-white"
-                  : "bg-gray-100 hover:bg-gray-200 text-gray-900"
-              }`}
-              aria-label={
-                darkMode ? "Switch to light mode" : "Switch to dark mode"
-              }
+              className={`p-2 rounded-lg transition-colors ${darkMode ? 'bg-gray-700 hover:bg-gray-600 text-white' : 'bg-gray-100 hover:bg-gray-200 text-gray-900'}`}
+              aria-label={darkMode ? 'Switch to light mode' : 'Switch to dark mode'}
             >
               {darkMode ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
             </button>
@@ -205,15 +199,15 @@ const Navbar = ({ darkMode, setDarkMode, name, image }: NavbarProps) => {
               className="h-16 w-16 rounded-full mx-auto object-cover"
               alt="User"
             />
-            <div
+            <button
               onClick={() => {
                 setMenuOpen(false);
                 handleLogout();
               }}
-              className="text-center p-2.5 cursor-pointer lg:font-semibold rounded-lg text-white bg-primary hover:bg-primary-hover transition-colors font-normal"
+              className="text-center p-2.5 cursor-pointer font-semibold rounded-lg text-white bg-primary hover:bg-primary-hover transition-colors"
             >
               Logout
-            </div>
+            </button>
           </div>
         )}
       </div>
