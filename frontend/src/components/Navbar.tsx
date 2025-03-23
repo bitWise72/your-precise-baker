@@ -29,7 +29,8 @@ const handleLogout = async () => {
 }
 
 const Navbar = ({ darkMode, setDarkMode, name, image }: NavbarProps) => {
-const user = localStorage.getItem("user");
+const storedUser = localStorage.getItem("user");
+const user = storedUser ? JSON.parse(storedUser) : null;
   const navigate = useNavigate();
   const [isMenuOpen, setMenuOpen] = useState(false);
   return (
